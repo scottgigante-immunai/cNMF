@@ -788,7 +788,10 @@ class cNMF():
             kmeans_model.fit(l2_spectra)
             kmeans_cluster_labels = pd.Series(kmeans_model.labels_+1, index=l2_spectra.index)
             # Compute the silhouette score
-            stability = silhouette_score(l2_spectra.values, kmeans_cluster_labels, metric='euclidean')
+            if len(np.unique(kmeans_cluster_labels)) == len(kmeans_cluster_labels):
+                stability = 0
+            else:
+                stability = silhouette_score(l2_spectra.values, kmeans_cluster_labels, metric='euclidean')
 
         # Find median usage for each gene across cluster
         median_spectra = l2_spectra.groupby(kmeans_cluster_labels).median()
